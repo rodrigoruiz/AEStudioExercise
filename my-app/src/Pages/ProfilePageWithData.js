@@ -57,8 +57,8 @@ function ProfilePageWithData({ profileName, profile }) {
     
     return (
         <div>
-            <b>{profileName}'s Profile</b>
-            <br /><br />
+            <p><b>{profileName}'s Profile</b></p>
+            <p>Location: {profile["location"]}</p>
             
             <img
                 src={profile["avatar_url"]}

@@ -2,15 +2,11 @@
 import React, { useState } from 'react';
 
 
-
-
 function SearchPage({ setCurrentProfile }) {
     const [text, setText] = useState("");
     
     return (
         <div>
-            <h1>Github profiler</h1>
-            
             <p className="centered">
                 github.com/
                 <input

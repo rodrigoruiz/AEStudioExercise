@@ -19,8 +19,18 @@ function LanguagesTable({ languages }) {
     </table>;
 }
 
+function saveNotes(profileName, text) {
+    localStorage.setItem(`notes:${profileName}`, text);
+}
+
+function getNotes(profileName) {
+    return localStorage.getItem(`notes:${profileName}`) ?? "";
+}
+
 function ProfilePageWithData({ profileName, profile }) {
     const [repositoryStats, setRepositoryStats] = useState(null);
+    
+    const [text, setText] = useState("");
     
     useEffect(() => {
         fetch(profile["repos_url"])
@@ -55,9 +65,13 @@ function ProfilePageWithData({ profileName, profile }) {
             .then(stats => setRepositoryStats(stats));
     }, []);
     
+    useEffect(() => {
+        setText(getNotes(profileName));
+    }, []);
+    
     return (
         <div>
-            <p><b>{profileName}'s Profile</b></p>
+            <p><b>{profileName}'s profile</b></p>
             <p>Location: {profile["location"]}</p>
             
             <img
@@ -77,6 +91,17 @@ function ProfilePageWithData({ profileName, profile }) {
             <br />
             
             <LanguagesTable languages={repositoryStats?.languages}/>
+            
+            <p><b>Notes:</b></p>
+            
+            <textarea
+                value={text}
+                onChange={e => setText(e.target.value)}
+                rows="10" cols="50"
+            />
+            <br clear="all" />
+            <button onClick={() => saveNotes(profileName, text)}>save</button>
+            <button onClick={() => setText(getNotes(profileName))}>cancel</button>
         </div>
     );
 }

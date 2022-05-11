@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import "./App.css";
-import ProfilePage from './Pages/ProfilePage';
-import SearchPage from "./Pages/SearchPage";
+import ProfilePage from './Components/ProfilePage';
+import SearchPage from "./Components/SearchPage";
 
 function App() {
     const [currentProfile, setCurrentProfile] = useState(null);

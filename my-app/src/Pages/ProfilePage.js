@@ -1,22 +1,21 @@
 
 import React, { useState, useEffect } from 'react';
+import { getProfile } from '../profileHandler';
 import ProfilePageWithData from './ProfilePageWithData';
 
 
 function ProfilePage({ profileName }) {
-    const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState("Loading");
     
     useEffect(() => {
-        fetch(`https://api.github.com/users/${profileName}`)
-            .then(response => response.json())
-            .then(data => setProfile(data));
+        getProfile(profileName).then(retrievedProfile => setProfile(retrievedProfile));
     }, []);
     
-    if (profile === null) {
+    if (profile === "Loading") {
         return <div>Loading</div>;
     }
     
-    if (profile["login"] === profileName) {
+    if (profile) {
         return <ProfilePageWithData
             profileName={profileName}
             profile={profile}

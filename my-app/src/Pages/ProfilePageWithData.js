@@ -28,42 +28,7 @@ function getNotes(profileName) {
 }
 
 function ProfilePageWithData({ profileName, profile }) {
-    const [repositoryStats, setRepositoryStats] = useState(null);
-    
     const [text, setText] = useState("");
-    
-    useEffect(() => {
-        fetch(profile["repos_url"])
-            .then(response => response.json())
-            .then(repositories => repositories.reduce(
-                (stats, repository) => ({
-                    stars: stats.stars + repository["stargazers_count"],
-                    watchers: stats.watchers + repository["watchers_count"],
-                    forks: stats.forks + repository["forks_count"],
-                    languages: {
-                        ...stats.languages,
-                        [repository["language"]]: (stats.languages[repository["language"]] ?? 0) + 1
-                    }
-                }),
-                {
-                    stars: 0,
-                    watchers: 0,
-                    forks: 0,
-                    languages: {}
-                }
-            ))
-            .then(stats => {
-                delete stats.languages["null"];
-                const total = Object.values(stats.languages).reduce((a, b) => a + b, 0);
-                
-                for (const key in stats.languages) {
-                    stats.languages[key] = `${Math.round(100 * stats.languages[key] / total)}%`;
-                }
-                
-                return stats;
-            })
-            .then(stats => setRepositoryStats(stats));
-    }, []);
     
     useEffect(() => {
         setText(getNotes(profileName));
@@ -83,14 +48,14 @@ function ProfilePageWithData({ profileName, profile }) {
                 <p>{profile["followers"]} followers</p>
                 <p>{profile["following"]} followings</p>
                 <p>{profile["public_repos"]} public repositories</p>
-                <p>{repositoryStats?.stars ?? "..."} stars</p> {/* stars from all owned user repositories */}
-                <p>{repositoryStats?.watchers ?? "..."} watchers</p> {/* watchers from all owned user repositories */}
-                <p>{repositoryStats?.forks ?? "..."} forks</p> {/* forks from all owned user repositories */}
+                <p>{profile.repositoryStats?.stars ?? "..."} stars</p> {/* stars from all owned user repositories */}
+                <p>{profile.repositoryStats?.watchers ?? "..."} watchers</p> {/* watchers from all owned user repositories */}
+                <p>{profile.repositoryStats?.forks ?? "..."} forks</p> {/* forks from all owned user repositories */}
             </div>
             <br clear="all" />
             <br />
             
-            <LanguagesTable languages={repositoryStats?.languages}/>
+            <LanguagesTable languages={profile.repositoryStats?.languages}/>
             
             <p><b>Notes:</b></p>
             

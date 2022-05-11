@@ -8,8 +8,9 @@ function getProfileFromCache(profileName) {
 }
 
 async function getProfileRepositoryStats(repositoriesURL) {
-    const response = await fetch(repositoriesURL);
-    const repositories = await response.json();
+    const repositories = await fetch(repositoriesURL)
+        .then(response => response.json())
+        .catch(() => []);
     
     const repositoryStats = repositories.reduce(
         (stats, repository) => ({
@@ -45,8 +46,10 @@ export async function getProfile(profileName) {
     
     if (!profile) {
         console.log(`Fetching profile: ${profileName}`);
+        
         profile = await fetch(`https://api.github.com/users/${profileName}`)
-            .then(response => response.json());
+            .then(response => response.json())
+            .catch(() => ({}));
         
         if (profile["repos_url"]) {
             profile.repositoryStats = await getProfileRepositoryStats(profile["repos_url"]);

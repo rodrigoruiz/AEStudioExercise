@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { clearProfileCache, getProfile } from '../profileHandler';
+import LoadingPage from './LoadingPage';
 import ProfileNotFoundPage from './ProfileNotFoundPage';
 import ProfilePageWithData from './ProfilePageWithData';
 
@@ -23,7 +24,7 @@ function ProfilePage({ profileName }) {
     };
     
     if (profile === "Loading") {
-        return <div>Loading</div>;
+        return <LoadingPage profileName={profileName} />
     }
     
     if (profile) {

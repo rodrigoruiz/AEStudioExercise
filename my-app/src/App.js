@@ -9,7 +9,10 @@ function App() {
     
     return (
         <div className="App">
-            <h1 onClick={() => setCurrentProfile(null)} style={{ color: "#24A0ED"}}>Github profiler</h1>
+            <h1
+                onClick={() => setCurrentProfile(null)}
+                style={{ color: "#24A0ED", marginBottom: "40px"}}
+            >Github profiler</h1>
             
             {currentProfile === null ?
                 <SearchPage setCurrentProfile={setCurrentProfile}/> :

@@ -1,23 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
+import LanguagesTable from './LanguagesTable';
+import MainProfile from './MainProfile';
+import Notes from './Notes';
 
-
-function LanguagesTable({ languages }) {
-    if (!languages) {
-        return <div />;
-    }
-    
-    return <table>
-        <tbody>
-            {Object.entries(languages).sort().map(([key, value]) => (
-                <tr key={key}>
-                    <td>{key}</td>
-                    <td>{value}</td>
-                </tr>
-            ))}
-        </tbody>
-    </table>;
-}
 
 function saveNotes(profileName, text) {
     localStorage.setItem(`notes:${profileName}`, text);
@@ -29,45 +15,31 @@ function getNotes(profileName) {
 
 function ProfilePageWithData({ profileName, profile, refreshProfile }) {
     const [text, setText] = useState("");
+    const [savedText, setSavedText] = useState("");
     
     useEffect(() => {
-        setText(getNotes(profileName));
+        const currentText = getNotes(profileName);
+        setText(currentText);
+        setSavedText(currentText);
     }, []);
     
     return (
         <div>
-            <p><b>{profileName}'s profile</b> <button onClick={() => refreshProfile()}>refresh</button></p>
-            <p>Location: {profile["location"] ?? "Unknown"}</p>
-            
-            <img
-                src={profile["avatar_url"]}
-                style={{ float: "left" }}
-                width={250}
-                height={250}
-            />
-            <div style={{ float: "left", marginLeft: "30px" }}>
-                <p>{profile["followers"]} followers</p>
-                <p>{profile["following"]} followings</p>
-                <p>{profile["public_repos"]} public repositories</p>
-                <p>{profile.repositoryStats?.stars ?? "..."} stars</p> {/* stars from all owned user repositories */}
-                <p>{profile.repositoryStats?.watchers ?? "..."} watchers</p> {/* watchers from all owned user repositories */}
-                <p>{profile.repositoryStats?.forks ?? "..."} forks</p> {/* forks from all owned user repositories */}
-            </div>
-            <br clear="all" />
-            <br />
+            <MainProfile profileName={profileName} profile={profile} refreshProfile={refreshProfile} />
             
             <LanguagesTable languages={profile.repositoryStats?.languages}/>
             
-            <p><b>Notes:</b></p>
-            
-            <textarea
-                value={text}
-                onChange={e => setText(e.target.value)}
-                rows="10" cols="50"
+            <Notes
+                text={text}
+                setText={setText}
+                saveNewText={() => {
+                    saveNotes(profileName, text);
+                    setText(text);
+                    setSavedText(text);
+                }}
+                resetText={() => setText(getNotes(profileName))}
+                savedText={savedText}
             />
-            <br clear="all" />
-            <button onClick={() => saveNotes(profileName, text)}>save</button>
-            <button onClick={() => setText(getNotes(profileName))}>cancel</button>
         </div>
     );
 }

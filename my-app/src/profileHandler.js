@@ -61,3 +61,7 @@ export async function getProfile(profileName) {
     
     return profile;
 }
+
+export function clearProfileCache(profileName) {
+    localStorage.removeItem(`cache:${profileName}`);
+}

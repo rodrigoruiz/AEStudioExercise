@@ -1,15 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
-import { getProfile } from '../profileHandler';
+import { clearProfileCache, getProfile } from '../profileHandler';
+import ProfileNotFoundPage from './ProfileNotFoundPage';
 import ProfilePageWithData from './ProfilePageWithData';
 
 
 function ProfilePage({ profileName }) {
     const [profile, setProfile] = useState("Loading");
     
+    const updateProfile = () => {
+        getProfile(profileName).then(setProfile);
+    };
+    
     useEffect(() => {
-        getProfile(profileName).then(retrievedProfile => setProfile(retrievedProfile));
+        updateProfile();
     }, []);
+    
+    const refreshProfile = () => {
+        clearProfileCache(profileName);
+        setProfile("Loading");
+        updateProfile();
+    };
     
     if (profile === "Loading") {
         return <div>Loading</div>;
@@ -19,10 +30,14 @@ function ProfilePage({ profileName }) {
         return <ProfilePageWithData
             profileName={profileName}
             profile={profile}
+            refreshProfile={refreshProfile}
         />;
     }
     
-    return <div>Profile "{profileName}" not found.</div>;
+    return <ProfileNotFoundPage
+        profileName={profileName}
+        refreshProfile={refreshProfile}
+    />;
 }
 
 export default ProfilePage;

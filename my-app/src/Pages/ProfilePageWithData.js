@@ -27,7 +27,7 @@ function getNotes(profileName) {
     return localStorage.getItem(`notes:${profileName}`) ?? "";
 }
 
-function ProfilePageWithData({ profileName, profile }) {
+function ProfilePageWithData({ profileName, profile, refreshProfile }) {
     const [text, setText] = useState("");
     
     useEffect(() => {
@@ -36,13 +36,14 @@ function ProfilePageWithData({ profileName, profile }) {
     
     return (
         <div>
-            <p><b>{profileName}'s profile</b></p>
-            <p>Location: {profile["location"]}</p>
+            <p><b>{profileName}'s profile</b> <button onClick={() => refreshProfile()}>refresh</button></p>
+            <p>Location: {profile["location"] ?? "Unknown"}</p>
             
             <img
                 src={profile["avatar_url"]}
                 style={{ float: "left" }}
                 width={250}
+                height={250}
             />
             <div style={{ float: "left", marginLeft: "30px" }}>
                 <p>{profile["followers"]} followers</p>
